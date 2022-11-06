@@ -1105,8 +1105,13 @@ const Datatable = ({
 const getMyTeamsDataTableConfig = (teamDetails) => {
   const teamsRecords = teamDetails,
     teamsColumns = [
+    {
+        field: 'code',
+        colName: 'Code',
+        sortable: true,
+      },
       {
-        field: 'first_name',
+        field: 'name',
         colName: 'Name',
         sortable: true,
         render: (rowData) => (
@@ -1116,28 +1121,59 @@ const getMyTeamsDataTableConfig = (teamDetails) => {
         ),
       },
       {
-        field: 'employment.title',
-        colName: 'Occupation',
+        field: 'type',
+        colName: 'Type',
         sortable: true,
       },
       {
-        field: 'subscription.status',
-        colName: 'Status',
+        field: 'availability',
+        colName: 'Availability',
+        sortable: true,
+      },
+       {
+        field: 'needing_repair',
+        colName: 'Need Repair',
         // width: '10%',
         render: (rowData) => (
           <p
-            className={`status ${
-              rowData.subscription.status.toLowerCase() === 'active'
+            className={`needing_repair ${
+              rowData.subscription.needing_repair.toLowerCase() === 'true'
                 ? 'success'
-                : rowData.subscription.status.toLowerCase() === 'blocked'
+                : rowData.subscription.needing_repair.toLowerCase() === 'false'
                 ? 'danger'
                 : 'warn'
             }`}
           >
-            {rowData.subscription.status}
+            {rowData.subscription.needing_repair}
           </p>
         ),
       },
+        {
+        field: 'durability',
+        colName: 'Durability',
+        sortable: true,
+      },
+       {
+        field: 'max_durability',
+        colName: 'Max Durability',
+        sortable: true,
+      },
+       {
+        field: 'mileage',
+        colName: 'Mileage',
+        sortable: true,
+      },
+       {
+        field: 'price',
+        colName: 'price',
+        sortable: true,
+      },
+       {
+        field: 'minimum_rent_period',
+        colName: 'Min Rent period',
+        sortable: true,
+      },
+     
     ],
     teamsConfig = {
       tableClasses: 'is-fullwidth',
@@ -1178,7 +1214,7 @@ const Data = () => {
     (async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('https://random-data-api.com/api/users/random_user?size=40'),
+        const res = await fetch('backend-frontend-data'),
           data = await res.json();
 
         setPeople(data);
