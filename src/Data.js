@@ -2,7 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import { Link } from 'react-router-dom'
+import Modal from 'react-modal';
 const { useState, useEffect, useMemo, useCallback, useRef, useContext, createContext } = React;
+
 /******** helpers ********/
 //flatten array of arrays
 function flatten(arr) {
@@ -69,7 +71,6 @@ function getElementOffset(el) {
 
 /******** constants ********/
 const rowsPerPageOptions = [
-  { value: '5', displayValue: '5 rows' },
   { value: '10', displayValue: '10 rows' },
   { value: '20', displayValue: '20 rows' },
   { value: '30', displayValue: '30 rows' },
@@ -1106,71 +1107,68 @@ const getMyTeamsDataTableConfig = (teamDetails) => {
   const teamsRecords = teamDetails,
     teamsColumns = [
     {
-        field: 'code',
-        colName: 'Code',
+        field: 'id',
+        colName: 'Id',
         sortable: true,
       },
       {
-        field: 'name',
+        field: 'username',
         colName: 'Name',
         sortable: true,
-        render: (rowData) => (
-          <p className="name">
-            {rowData.first_name} {rowData.last_name}
-          </p>
-        ),
+       
       },
       {
-        field: 'type',
-        colName: 'Type',
+        field: 'email',
+        colName: 'Email',
         sortable: true,
       },
       {
-        field: 'availability',
-        colName: 'Availability',
+        field: 'gender',
+        colName: 'Gender',
         sortable: true,
       },
        {
-        field: 'needing_repair',
-        colName: 'Need Repair',
+        field: 'phone_number',
+        colName: 'Phone Number',
+        // width: '10%',
+        sortable:true,
+      },
+        {
+        field: 'employment.title',
+        colName: 'Employment',
+        sortable: true,
+      },
+       {
+        field: 'address.city',
+        colName: 'City',
+        sortable: true,
+      },
+       {
+        field: 'credit_card.cc_number',
+        colName: 'Card Number',
+        sortable: true,
+      },
+       {
+        field: 'subscription.status',
+        colName: 'Status',
         // width: '10%',
         render: (rowData) => (
           <p
-            className={`needing_repair ${
-              rowData.subscription.needing_repair.toLowerCase() === 'true'
+            className={`status ${
+              rowData.subscription.status.toLowerCase() === 'active'
                 ? 'success'
-                : rowData.subscription.needing_repair.toLowerCase() === 'false'
+                : rowData.subscription.status.toLowerCase() === 'blocked'
                 ? 'danger'
                 : 'warn'
             }`}
           >
-            {rowData.subscription.needing_repair}
+            {rowData.subscription.status}
           </p>
         ),
       },
-        {
-        field: 'durability',
-        colName: 'Durability',
-        sortable: true,
-      },
        {
-        field: 'max_durability',
-        colName: 'Max Durability',
-        sortable: true,
-      },
-       {
-        field: 'mileage',
-        colName: 'Mileage',
-        sortable: true,
-      },
-       {
-        field: 'price',
-        colName: 'price',
-        sortable: true,
-      },
-       {
-        field: 'minimum_rent_period',
-        colName: 'Min Rent period',
+        field: 'subscription.term',
+        colName: 'subscription Term',
         sortable: true,
       },
      
@@ -1203,6 +1201,18 @@ const getMyTeamsDataTableConfig = (teamDetails) => {
 };
 
 const Data = () => {
+  const [modalIsOpen,setIsOpen] = React.useState(false);
+ 
+  function openModal() {
+    setIsOpen(true);
+  }
+ 
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+
+  
   const [people, setPeople] = useState([]),
     //use the following if you want to reset pagination
     resetDatatablePaginationRef = useRef(),
@@ -1214,7 +1224,7 @@ const Data = () => {
     (async () => {
       setIsLoading(true);
       try {
-        const res = await fetch('backend-frontend-data'),
+        const res = await fetch('https://random-data-api.com/api/users/random_user?size=100'),
           data = await res.json();
 
         setPeople(data);
@@ -1227,9 +1237,13 @@ const Data = () => {
     })();
   }, []);
 
+ 
+
   const resetCurrentPaginationPage = (callback) => {
     resetDatatablePaginationRef.current = callback;
   };
+
+
 
   /*
   // example of resetting pagination
@@ -1268,11 +1282,11 @@ const Data = () => {
   */
 
   return (
-    <div className="container">
+    <div className="container text-center">
       <h1>React datatable from scratch</h1>
       {error && <p>Fetching error</p>}
       <Datatable
-        title="Employees"
+       className="text-center"
         columns={teamsColumns}
         records={teamsRecords}
         config={teamsConfig}
@@ -1286,7 +1300,48 @@ const Data = () => {
           onDebouncedSearch,
         }}*/
       />
+        <div className='mt-2'>
+          <button onClick={openModal} className='btn btn-success float-end mx-1'>Book Now</button>
+          <button  onClick={openModal} className='btn btn-danger float-end'>Return</button>
+        </div>
+    <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Example Modal"
+      >
+        <button onClick={closeModal}>close</button>
+        <div>I am a modal</div>
+        <form>
+          <input />
+          <button>tab navigation</button>
+          <button>stays</button>
+          <button>inside</button>
+          <button>the modal</button>
+        </form>
+      </Modal>
+
+
+       <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Example Modal"
+      >
+        <button onClick={closeModal}>close</button>
+        <div>I am  modal2</div>
+        <div className='row'>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+            standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
+            a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with the release of
+            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
+            PageMaker including versions of Lorem Ipsum
+          </p>
+       </div>
+      </Modal>
+ 
     </div>
+
   );
 };
 
